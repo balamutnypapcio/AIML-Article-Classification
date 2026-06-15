@@ -1,0 +1,45 @@
+RAPORT 1: WYNIKI BAZOWE (STANDARDOWE PARAMETRY)
+============================================================
+
+--- BoW + NaiveBayes ---
+Wynik CV (5-fold): 97.33% ± 0.65%
+
+--- BoW + LogisticRegression ---
+Wynik CV (5-fold): 96.56% ± 0.81%
+
+--- BoW + LinearSVC ---
+Wynik CV (5-fold): 96.63% ± 1.23%
+
+--- BoW bigram + NaiveBayes ---
+Wynik CV (5-fold): 97.05% ± 0.79%
+
+--- BoW bigram + LogisticRegression ---
+Wynik CV (5-fold): 96.70% ± 0.72%
+
+--- BoW bigram + LinearSVC ---
+Wynik CV (5-fold): 96.70% ± 1.19%
+
+--- TF-IDF + NaiveBayes ---
+Wynik CV (5-fold): 96.42% ± 0.41%
+
+--- TF-IDF + LogisticRegression ---
+Wynik CV (5-fold): 97.40% ± 0.82%
+
+--- TF-IDF + LinearSVC ---
+Wynik CV (5-fold): 97.40% ± 0.72%
+
+--- TF-IDF bigram + NaiveBayes ---
+Wynik CV (5-fold): 95.29% ± 0.61%
+
+--- TF-IDF bigram + LogisticRegression ---
+Wynik CV (5-fold): 97.26% ± 0.60%
+
+--- TF-IDF bigram + LinearSVC ---
+Wynik CV (5-fold): 98.10% ± 0.48%
+
+--- Word2Vec + LogisticRegression ---
+Wynik CV (5-fold): 69.10% ± 1.66%
+
+--- Word2Vec + LinearSVC ---
+Wynik CV (5-fold): 71.56% ± 1.81%
+

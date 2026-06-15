@@ -1,0 +1,15 @@
+I've come to an industrial space in a tech-heavy area of San Francisco expecting to see a menacing humanoid robot solider doing something combat-like: the future of land-based warfare, perhaps.
+
+Instead, the black shiny faceless Phantom robot is engaged in "free play", manipulating a bunch of coloured kids blocks.
+
+"We need data from it just interacting with its environment…[and] this is today's menu," explains Sankaet Pathak, co-founder and CEO of two-year-old start-up Foundation Robotics, which is developing Phantom for military and civilian applications.
+
+Later he pushes its 80kg steel-covered body around the room to demonstrate its stability and shows me how it walks.
+
+While many companies are building autonomous humanoid robots for factories, homes or companions, Foundation claims it is the only US firm developing them specifically for a broad range of defence applications.
+
+That includes support roles like supply pickup, reconnaissance, recovery of equipment or casualties, and hazard inspection. But also, more controversially, warfighting to engage and neutralise threats – which Pathak calls "frontline weaponisation".
+
+Arming robots could keep human soldiers out of harm's way, he argues. They could enter and search buildings, where chokepoints can be lethal.
+
+They could also reduce collateral damage. Land-based autonomy can be more precise than striking targets autonomously from the air, he says.

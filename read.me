@@ -1,0 +1,13 @@
+main.py
+  │
+  ├─ load_data("data/")          ← data_handler.py
+  │     iteruje po 5 podfolderach
+  │     zwraca X (teksty) i y (etykiety)
+  │
+  └─ evaluate_models(X, y)       ← classifier.py
+        podział 80/20 (stratified)
+        ╔══════════════════════════════╗
+        ║  dla każdego VECTORIZER:     ║
+        ║    dla każdego MODEL:        ║
+        ║      Pipeline → fit → eval   ║
+        ╚══════════════════════════════╝
