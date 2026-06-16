@@ -1,0 +1,22 @@
+               precision    recall  f1-score   support
+
+     business       0.95      1.00      0.98        82
+entertainment       0.98      0.98      0.98        62
+     politics       0.98      0.97      0.98        66
+        sport       1.00      0.99      0.99        82
+         tech       1.00      0.97      0.98        64
+
+     accuracy                           0.98       356
+    macro avg       0.98      0.98      0.98       356
+ weighted avg       0.98      0.98      0.98       356
+
+==================================================
+
+CONFUSION MATRIX:
+                | Pred: busi | Pred: ente | Pred: poli | Pred: spor | Pred: tech
+-----------------------------------------------------------------------------------
+True: business  | 82        | 0         | 0         | 0         | 0        
+True: entertainment | 1         | 61        | 0         | 0         | 0        
+True: politics  | 2         | 0         | 64        | 0         | 0        
+True: sport     | 1         | 0         | 0         | 81        | 0        
+True: tech      | 0         | 1         | 1         | 0         | 62       

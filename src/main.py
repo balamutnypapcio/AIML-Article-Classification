@@ -6,88 +6,93 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from classifier import run_all_baselines, run_all_tuning
 import reporter
+from sklearn.metrics import classification_report
 
-
-# Konfiguracja ścieżek
+# Path configuration
 DATA_PATH = os.path.join(os.path.dirname(__file__), "mlarr_text")
-MODEL_PATH = "best_model.pkl"  # Tu zapiszemy nasz "zamrożony" model
+MODEL_PATH = "best_model.pkl"  # This is where we will save our "frozen" model
 CV_FOLDS = 5
 
 def train_mode():
-    """Tryb trenowania: uczy modele i zapisuje najlepszy na dysk."""
-    print("=== TRYB: TRAIN ===")
-    print(f"Wczytywanie danych z: {DATA_PATH!r}")
+    """Train mode: trains models and saves the best one to disk."""
+    print("=== MODE: TRAIN ===")
+    print(f"Loading data from: {DATA_PATH!r}")
     X, y = load_data(DATA_PATH)
 
-    # Używamy random_state=42, aby podział był deterministyczny.
-    # Dzięki temu w trybie test model zostanie sprawdzony na tych samych odłożonych danych.
+    # We use random_state=42 to make the split deterministic.
+    # This ensures the test mode will verify the model on the exact same held-out data.
     X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     
-    print("-> Obliczanie wyników bazowych...")
+    print("-> Computing baseline results...")
     baseline_results = run_all_baselines(X_train, y_train, CV_FOLDS)
     reporter.save_to_file("01_baseline_results.txt", reporter.format_baseline_report(baseline_results, CV_FOLDS))
 
-    print("-> Optymalizacja GridSearch...")
+    print("-> Running GridSearch optimization...")
     tuned_results, best_pipeline = run_all_tuning(X_train, y_train, CV_FOLDS)
     reporter.save_to_file("02_tuned_results.txt", reporter.format_tuned_report(tuned_results))
 
-    # Zapisanie modelu na dysk (serializacja obiektu)
-    print(f"-> Zapisywanie najlepszego modelu do pliku: {MODEL_PATH}")
+    # Saving the model to disk (object serialization)
+    print(f"-> Saving the best model to file: {MODEL_PATH}")
     joblib.dump(best_pipeline, MODEL_PATH)
-    print("Trening zakończony sukcesem!\n")
+    print("Training completed successfully!\n")
 
 
 def test_mode():
-    """Tryb testowania: wczytuje model i weryfikuje go na danych testowych."""
-    print("=== TRYB: TEST ===")
+    """Test mode: loads the model and verifies it on test data."""
+    print("=== MODE: TEST ===")
     if not os.path.exists(MODEL_PATH):
-        print(f"Błąd: Nie znaleziono pliku {MODEL_PATH}. Uruchom najpierw tryb 'train'.")
+        print(f"Error: File {MODEL_PATH} not found. Run 'train' mode first.")
         return
 
-    print(f"Wczytywanie modelu z {MODEL_PATH}...")
+    print(f"Loading model from {MODEL_PATH}...")
     best_pipeline = joblib.load(MODEL_PATH)
 
-    print(f"Wczytywanie danych z: {DATA_PATH!r}")
+    print(f"Loading data from: {DATA_PATH!r}")
     X, y = load_data(DATA_PATH)
     
-    # Odtwarzamy ten sam podział, aby przetestować na danych, których model NIE widział w trakcie uczenia
+    # We recreate the same split to test on data the model has NOT seen during training
     _, X_test, _, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    print("-> Generowanie Classification Report...\n")
+    print("-> Generating Classification Report...\n")
     y_pred = best_pipeline.predict(X_test)
-    report = classification_report(y_test, y_pred)
+    labels = best_pipeline.classes_
     
-    print(report)
-    reporter.save_to_file("03_classification_report.txt", report)
+    clf_report = classification_report(y_test, y_pred)
+    cm_report = reporter.format_confusion_matrix(y_test, y_pred, labels)
+    
+    full_report = clf_report + "\n" + "="*50 + "\n\n" + cm_report
+    
+    print(full_report)
+    reporter.save_to_file("03_classification_report.txt", full_report)
 
 
 def classify_mode(file_path):
-    """Tryb klasyfikacji: ocenia jeden, całkowicie nowy tekst."""
-    print("=== TRYB: CLASSIFY ===")
+    """Classify mode: evaluates a single, entirely new text."""
+    print("=== MODE: CLASSIFY ===")
     if not os.path.exists(MODEL_PATH):
-        print(f"Błąd: Nie znaleziono pliku {MODEL_PATH}. Uruchom najpierw tryb 'train'.")
+        print(f"Error: File {MODEL_PATH} not found. Run 'train' mode first.")
         return
         
     if not os.path.exists(file_path):
-        print(f"Błąd: Nie znaleziono pliku tekstowego '{file_path}'.")
+        print(f"Error: Text file '{file_path}' not found.")
         return
 
-    print(f"Wczytywanie modelu z {MODEL_PATH}...")
+    print(f"Loading model from {MODEL_PATH}...")
     best_pipeline = joblib.load(MODEL_PATH)
 
-    # Wczytanie tekstu omijając ewentualne błędy kodowania
+    # Loading text while bypassing potential encoding errors
     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-        tekst = f.read()
+        text = f.read()
 
-    print(f"Klasyfikowanie zawartości pliku: {file_path}")
-    prediction = best_pipeline.predict([tekst])
-    print(f"\n>>> Wynik: Ten tekst należy do kategorii: {prediction[0].upper()} <<<\n")
+    print(f"Classifying the contents of the file: {file_path}")
+    prediction = best_pipeline.predict([text])
+    print(f"\n>>> Result: This text belongs to the category: {prediction[0].upper()} <<<\n")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Klasyfikator tekstów (NLP)")
-    parser.add_argument("mode", choices=["train", "test", "classify"], help="Wybierz tryb działania programu")
-    parser.add_argument("--file", type=str, help="Ścieżka do pliku .txt (wymagane tylko dla trybu classify)")
+    parser = argparse.ArgumentParser(description="Text Classifier (NLP)")
+    parser.add_argument("mode", choices=["train", "test", "classify"], help="Select the program execution mode")
+    parser.add_argument("--file", type=str, help="Path to the .txt file (required only for classify mode)")
 
     args = parser.parse_args()
 
@@ -97,8 +102,8 @@ def main():
         test_mode()
     elif args.mode == "classify":
         if not args.file:
-            print("Błąd: Tryb 'classify' wymaga podania ścieżki do pliku przez argument --file.")
-            print("Przykład użycia: python main.py classify --file probka.txt")
+            print("Error: 'classify' mode requires passing a file path via the --file argument.")
+            print("Usage example: python main.py classify --file sample.txt")
         else:
             classify_mode(args.file)
 

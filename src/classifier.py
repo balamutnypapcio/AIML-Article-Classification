@@ -11,19 +11,16 @@ from sklearn.svm import LinearSVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import cross_val_score, GridSearchCV
-
-# UWAGA: Wymaga instalacji: pip install gensim
+from sklearn.model_selection import cross_validate, GridSearchCV
 from gensim.models import Word2Vec
-
 import warnings
 from sklearn.exceptions import ConvergenceWarning
 
-# Wyciszamy irytujące ostrzeżenia z SVM o braku zbieżności
+# Suppress annoying convergence warnings from SVM
 warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 class MeanWord2VecVectorizer(BaseEstimator, TransformerMixin):
-    """Niestandardowy wektoryzator integrujący Gensim Word2Vec z scikit-learn."""
+    """Custom vectorizer integrating Gensim Word2Vec with scikit-learn."""
     def __init__(self, vector_size=100, window=5, min_count=2):
         self.vector_size = vector_size
         self.window = window
@@ -31,7 +28,7 @@ class MeanWord2VecVectorizer(BaseEstimator, TransformerMixin):
         self.model_ = None
 
     def fit(self, X, y=None):
-        # Word2Vec oczekuje listy tokenów (słów), a nie całych stringów
+        # Word2Vec expects a list of tokens (words), not full strings
         tokenized_X = [text.lower().split() for text in X]
         self.model_ = Word2Vec(
             sentences=tokenized_X, 
@@ -46,19 +43,19 @@ class MeanWord2VecVectorizer(BaseEstimator, TransformerMixin):
         tokenized_X = [text.lower().split() for text in X]
         X_vectors = []
         for words in tokenized_X:
-            # Filtrujemy słowa, które model poznał podczas .fit()
+            # Filter words that the model learned during .fit()
             known_words = [word for word in words if word in self.model_.wv]
             if known_words:
-                # Uśredniamy wektory wszystkich słów w dokumencie
+                # Average the vectors of all words in the document
                 doc_vector = np.mean(self.model_.wv[known_words], axis=0)
             else:
-                # Jeśli żadne słowo nie jest znane, zwracamy wektor zer
+                # If no word is known, return a zero vector
                 doc_vector = np.zeros(self.vector_size)
             X_vectors.append(doc_vector)
         return np.array(X_vectors)
 
 # ==========================================
-# KONFIGURACJA MODELI
+# MODELS CONFIGURATION
 # ==========================================
 VECTORIZERS: dict = {
     "BoW": CountVectorizer(stop_words="english"),
@@ -77,7 +74,7 @@ MODELS: dict = {
      "RandomForest": RandomForestClassifier(random_state=42)
 }
 
-# Skrócona siatka parametrów (aby eksperyment nie trwał wieków)
+# Reduced parameter grid (so the experiment doesn't take ages)
 PARAM_GRIDS: dict = {
     "NaiveBayes": {"classifier__alpha": [0.1, 1.0]},
     "LogisticRegression": {"classifier__C": [0.1, 1.0, 10.0]},
@@ -88,28 +85,26 @@ PARAM_GRIDS: dict = {
 }
 
 # ==========================================
-# WARSTWA OBLICZENIOWA (Logika ML)
+# COMPUTATIONAL LAYER (ML Logic)
 # ==========================================
 def run_all_baselines(X_train: list[str], y_train: list[str], cv_folds: int) -> dict:
     results = {}
-    
-    # Spłaszczamy kombinacje wektoryzatorów i modeli do jednej listy, aby pasek ładowania działał poprawnie
     combinations = list(itertools.product(VECTORIZERS.items(), MODELS.items()))
     
-    # Owijamy główną pętlę paskiem tqdm
-    for (vec_name, vectorizer), (model_name, model) in tqdm(combinations, desc="Modele Bazowe"):
-        # MultinomialNB nie obsługuje ujemnych wartości z Word2Vec
+    for (vec_name, vectorizer), (model_name, model) in tqdm(combinations, desc="Baseline Models"):
         if model_name == "NaiveBayes" and vec_name == "Word2Vec":
             continue
             
         key = f"{vec_name} + {model_name}"
         pipeline = Pipeline([("vectorizer", vectorizer), ("classifier", model)])
         
-        cv_scores = cross_val_score(pipeline, X_train, y_train, cv=cv_folds, scoring="accuracy", n_jobs=-1)
+        # CHANGE: using cross_validate to extract fit time
+        cv_results = cross_validate(pipeline, X_train, y_train, cv=cv_folds, scoring="accuracy", n_jobs=-1)
         
         results[key] = {
-            "acc": cv_scores.mean(),
-            "std": cv_scores.std(),
+            "acc": cv_results['test_score'].mean(),
+            "std": cv_results['test_score'].std(),
+            "fit_time": cv_results['fit_time'].mean(), # Mean fit time of 1 fold
             "vec_params": vectorizer.get_params() if hasattr(vectorizer, 'get_params') else {},
             "mod_params": model.get_params(),
             "model_type": model_name
@@ -123,28 +118,30 @@ def run_all_tuning(X_train: list[str], y_train: list[str], cv_folds: int) -> tup
 
     combinations = list(itertools.product(VECTORIZERS.items(), MODELS.items()))
 
-    # Owijamy pętlę strojenia paskiem tqdm
-    for (vec_name, vectorizer), (model_name, model) in tqdm(combinations, desc="Optymalizacja GridSearch"):
+    # Wrap the tuning loop with a tqdm progress bar
+    for (vec_name, vectorizer), (model_name, model) in tqdm(combinations, desc="GridSearch Optimization"):
         if model_name == "NaiveBayes" and vec_name == "Word2Vec":
             continue
 
         key = f"{vec_name} + {model_name}"
         pipeline = Pipeline([("vectorizer", vectorizer), ("classifier", model)])
         
-        # GridSearchCV szuka najlepszych parametrów
+        # GridSearchCV searches for the best parameters
         grid_search = GridSearchCV(pipeline, PARAM_GRIDS[model_name], cv=cv_folds, scoring="accuracy", n_jobs=-1)
         grid_search.fit(X_train, y_train)
         
         best_idx = grid_search.best_index_
         best_std = grid_search.cv_results_['std_test_score'][best_idx]
+        mean_fit_time = grid_search.cv_results_['mean_fit_time'][best_idx] # CHANGE: extracting fit time
         
         results[key] = {
             "acc": grid_search.best_score_,
             "std": best_std,
-            "params": grid_search.best_params_
+            "params": grid_search.best_params_,
+            "fit_time": mean_fit_time # Added time
         }
 
-        # Zapisywanie najlepszego pipeline'u globalnie
+        # Saving the best pipeline globally
         if grid_search.best_score_ > best_overall_score:
             best_overall_score = grid_search.best_score_
             best_overall_pipeline = grid_search.best_estimator_

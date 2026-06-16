@@ -1,0 +1,146 @@
+REPORT 2: TUNED RESULTS (GRID SEARCH)
+======================================================================
+
+--- BoW + NaiveBayes ---
+Best CV Score: 97.54% ± 0.63%
+Mean fit time: 0.3415 s
+Best parameters:
+  - classifier__alpha: 0.1
+
+--- BoW + LogisticRegression ---
+Best CV Score: 96.28% ± 1.51%
+Mean fit time: 1.5306 s
+Best parameters:
+  - classifier__C: 1.0
+
+--- BoW + LinearSVC ---
+Best CV Score: 96.77% ± 1.56%
+Mean fit time: 0.8969 s
+Best parameters:
+  - classifier__C: 0.1
+
+--- BoW + KNN ---
+Best CV Score: 60.18% ± 3.08%
+Mean fit time: 0.4429 s
+Best parameters:
+  - classifier__n_neighbors: 3
+
+--- BoW + NeuralNet_MLP ---
+Best CV Score: 97.75% ± 1.38%
+Mean fit time: 18.5885 s
+Best parameters:
+  - classifier__hidden_layer_sizes: (50,)
+
+--- BoW + RandomForest ---
+Best CV Score: 95.44% ± 1.31%
+Mean fit time: 1.5916 s
+Best parameters:
+  - classifier__n_estimators: 100
+
+--- BoW bigram + NaiveBayes ---
+Best CV Score: 97.40% ± 0.96%
+Mean fit time: 1.5591 s
+Best parameters:
+  - classifier__alpha: 0.1
+
+--- BoW bigram + LogisticRegression ---
+Best CV Score: 96.21% ± 1.91%
+Mean fit time: 5.1897 s
+Best parameters:
+  - classifier__C: 10.0
+
+--- BoW bigram + LinearSVC ---
+Best CV Score: 96.56% ± 1.48%
+Mean fit time: 9.6726 s
+Best parameters:
+  - classifier__C: 0.1
+
+--- BoW bigram + KNN ---
+Best CV Score: 44.38% ± 2.15%
+Mean fit time: 1.4137 s
+Best parameters:
+  - classifier__n_neighbors: 3
+
+--- BoW bigram + NeuralNet_MLP ---
+Best CV Score: 97.40% ± 1.12%
+Mean fit time: 115.4018 s
+Best parameters:
+  - classifier__hidden_layer_sizes: (50,)
+
+--- BoW bigram + RandomForest ---
+Best CV Score: 94.31% ± 1.53%
+Mean fit time: 5.6680 s
+Best parameters:
+  - classifier__n_estimators: 100
+
+--- TF-IDF + NaiveBayes ---
+Best CV Score: 97.75% ± 1.06%
+Mean fit time: 0.4303 s
+Best parameters:
+  - classifier__alpha: 0.1
+
+--- TF-IDF + LogisticRegression ---
+Best CV Score: 97.89% ± 0.59%
+Mean fit time: 1.2904 s
+Best parameters:
+  - classifier__C: 10.0
+
+--- TF-IDF + LinearSVC ---
+Best CV Score: 97.54% ± 0.45%
+Mean fit time: 0.4513 s
+Best parameters:
+  - classifier__C: 1.0
+
+--- TF-IDF + KNN ---
+Best CV Score: 94.17% ± 1.51%
+Mean fit time: 0.3879 s
+Best parameters:
+  - classifier__n_neighbors: 7
+
+--- TF-IDF + NeuralNet_MLP ---
+Best CV Score: 97.75% ± 1.10%
+Mean fit time: 59.7950 s
+Best parameters:
+  - classifier__hidden_layer_sizes: (50,)
+
+--- TF-IDF + RandomForest ---
+Best CV Score: 95.16% ± 1.77%
+Mean fit time: 1.5487 s
+Best parameters:
+  - classifier__n_estimators: 100
+
+--- TF-IDF bigram + NaiveBayes ---
+Best CV Score: 97.75% ± 1.19%
+Mean fit time: 1.4710 s
+Best parameters:
+  - classifier__alpha: 0.1
+
+--- TF-IDF bigram + LogisticRegression ---
+Best CV Score: 97.61% ± 0.93%
+Mean fit time: 12.3058 s
+Best parameters:
+  - classifier__C: 10.0
+
+--- TF-IDF bigram + LinearSVC ---
+Best CV Score: 97.89% ± 0.67%
+Mean fit time: 1.7120 s
+Best parameters:
+  - classifier__C: 1.0
+
+--- TF-IDF bigram + KNN ---
+Best CV Score: 94.80% ± 0.89%
+Mean fit time: 1.2952 s
+Best parameters:
+  - classifier__n_neighbors: 7
+
+--- TF-IDF bigram + NeuralNet_MLP ---
+Best CV Score: 97.61% ± 1.12%
+Mean fit time: 503.4448 s
+Best parameters:
+  - classifier__hidden_layer_sizes: (100,)
+
+--- TF-IDF bigram + RandomForest ---
+Best CV Score: 94.80% ± 1.37%
+Mean fit time: 5.6344 s
+Best parameters:
+  - classifier__n_estimators: 100

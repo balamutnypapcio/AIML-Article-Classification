@@ -1,0 +1,98 @@
+REPORT 1: BASELINE RESULTS (DEFAULT PARAMETERS)
+======================================================================
+
+--- BoW + NaiveBayes ---
+CV Score (5-fold): 97.54% ± 0.63%
+Mean fit time: 0.3122 s
+
+--- BoW + LogisticRegression ---
+CV Score (5-fold): 96.28% ± 1.51%
+Mean fit time: 0.7879 s
+
+--- BoW + LinearSVC ---
+CV Score (5-fold): 96.70% ± 1.70%
+Mean fit time: 1.4021 s
+
+--- BoW + KNN ---
+CV Score (5-fold): 57.30% ± 2.58%
+Mean fit time: 0.3105 s
+
+--- BoW + NeuralNet_MLP ---
+CV Score (5-fold): 97.47% ± 1.74%
+Mean fit time: 16.2295 s
+
+--- BoW + RandomForest ---
+CV Score (5-fold): 95.44% ± 1.31%
+Mean fit time: 1.5551 s
+
+--- BoW bigram + NaiveBayes ---
+CV Score (5-fold): 96.91% ± 1.10%
+Mean fit time: 1.0464 s
+
+--- BoW bigram + LogisticRegression ---
+CV Score (5-fold): 96.21% ± 1.54%
+Mean fit time: 8.6616 s
+
+--- BoW bigram + LinearSVC ---
+CV Score (5-fold): 96.56% ± 1.48%
+Mean fit time: 13.4705 s
+
+--- BoW bigram + KNN ---
+CV Score (5-fold): 42.06% ± 1.89%
+Mean fit time: 1.0450 s
+
+--- BoW bigram + NeuralNet_MLP ---
+CV Score (5-fold): 97.40% ± 1.38%
+Mean fit time: 111.1693 s
+
+--- BoW bigram + RandomForest ---
+CV Score (5-fold): 94.31% ± 1.53%
+Mean fit time: 5.8512 s
+
+--- TF-IDF + NaiveBayes ---
+CV Score (5-fold): 95.93% ± 0.88%
+Mean fit time: 0.3204 s
+
+--- TF-IDF + LogisticRegression ---
+CV Score (5-fold): 96.70% ± 1.36%
+Mean fit time: 0.7924 s
+
+--- TF-IDF + LinearSVC ---
+CV Score (5-fold): 97.54% ± 0.45%
+Mean fit time: 0.3625 s
+
+--- TF-IDF + KNN ---
+CV Score (5-fold): 93.89% ± 1.05%
+Mean fit time: 0.3080 s
+
+--- TF-IDF + NeuralNet_MLP ---
+CV Score (5-fold): 97.75% ± 0.79%
+Mean fit time: 57.9330 s
+
+--- TF-IDF + RandomForest ---
+CV Score (5-fold): 95.16% ± 1.77%
+Mean fit time: 1.3464 s
+
+--- TF-IDF bigram + NaiveBayes ---
+CV Score (5-fold): 95.65% ± 1.27%
+Mean fit time: 0.9894 s
+
+--- TF-IDF bigram + LogisticRegression ---
+CV Score (5-fold): 96.91% ± 1.34%
+Mean fit time: 7.1738 s
+
+--- TF-IDF bigram + LinearSVC ---
+CV Score (5-fold): 97.89% ± 0.67%
+Mean fit time: 1.2489 s
+
+--- TF-IDF bigram + KNN ---
+CV Score (5-fold): 94.24% ± 1.32%
+Mean fit time: 0.9704 s
+
+--- TF-IDF bigram + NeuralNet_MLP ---
+CV Score (5-fold): 97.61% ± 1.12%
+Mean fit time: 438.9013 s
+
+--- TF-IDF bigram + RandomForest ---
+CV Score (5-fold): 94.80% ± 1.37%
+Mean fit time: 5.3470 s

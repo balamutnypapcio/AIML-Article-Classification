@@ -1,7 +1,7 @@
 """
 data_handler.py
-Odpowiedzialny wyłącznie za wczytywanie danych z dysku.
-Zakłada strukturę: data_path/<klasa>/<plik>.txt
+Responsible exclusively for loading data from disk.
+Assumes the structure: data_path/<class>/<file>.txt
 """
 
 import os
@@ -9,30 +9,30 @@ import os
 
 def load_data(data_path: str) -> tuple[list[str], list[str]]:
     """
-    Wczytuje teksty ze wszystkich podfolderów w data_path.
+    Loads texts from all subfolders within data_path.
 
-    Każdy podfolder traktowany jest jako nazwa klasy (etykieta).
-    Błędy kodowania (np. latin-1 zamiast UTF-8) są ignorowane.
+    Each subfolder is treated as a class name (label).
+    Encoding errors (e.g., latin-1 instead of UTF-8) are ignored.
 
     Args:
-        data_path: Ścieżka do głównego katalogu z danymi.
+        data_path: Path to the main data directory.
 
     Returns:
-        X: Lista surowych tekstów.
-        y: Lista etykiet (nazw podfolderów), zsynchronizowana z X.
+        X: List of raw texts.
+        y: List of labels (subfolder names), synchronized with X.
     """
     X: list[str] = []
     y: list[str] = []
 
     if not os.path.isdir(data_path):
-        raise FileNotFoundError(f"Nie znaleziono katalogu z danymi: '{data_path}'")
+        raise FileNotFoundError(f"Data directory not found: '{data_path}'")
 
-    # Każdy podfolder = jedna klasa
+    # Each subfolder = one class
     for class_name in sorted(os.listdir(data_path)):
         class_dir = os.path.join(data_path, class_name)
 
         if not os.path.isdir(class_dir):
-            continue  # Pomijamy luźne pliki w głównym katalogu
+            continue  # Skip loose files in the main directory
 
         txt_files = [f for f in os.listdir(class_dir) if f.endswith(".txt")]
 
@@ -41,12 +41,11 @@ def load_data(data_path: str) -> tuple[list[str], list[str]]:
             with open(filepath, encoding="utf-8", errors="ignore") as f:
                 text = f.read().strip()
 
-            if text:  # Pomijamy puste pliki
+            if text:  # Skip empty files
                 X.append(text)
                 y.append(class_name)
 
-        print(f"  Klasa '{class_name}': wczytano {len(txt_files)} plików")
+        print(f"  Class '{class_name}': loaded {len(txt_files)} files")
 
-    print(f"\nŁącznie wczytano {len(X)} dokumentów z {len(set(y))} klas.\n")
+    print(f"\nTotal loaded {len(X)} documents from {len(set(y))} classes.\n")
     return X, y
-
